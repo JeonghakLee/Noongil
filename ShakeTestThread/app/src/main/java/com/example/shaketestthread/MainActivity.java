@@ -1,20 +1,23 @@
 package com.example.shaketestthread;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
-import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.w3c.dom.Text;
-
 
 public class MainActivity extends AppCompatActivity {
-    private ShakeE mShake = new ShakeE();
-    private TextView txt;
+    private ShakeE      mShake;
+    private myHandler   mHandler;
+    private boolean     TimeSave = true;
+    private TextView    txt;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -22,20 +25,44 @@ public class MainActivity extends AppCompatActivity {
 
         txt = (TextView) findViewById(R.id.txt);
         txt.setText("0");
+        mShake = new ShakeE();
         mShake.create();
+        mHandler = new myHandler();
     }
 
-    private class ShakeE extends AsyncTask<Void, Void, Integer> implements SensorEventListener {
+    private class myHandler extends Handler {
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                default:
+                    mShake.print(msg.what);
+                    mShake.displayCount(msg.what);
+            }
+        }
+    }
+
+    public class TestThread implements Runnable {
+        @Override
+        public void run() {
+            try {
+                Thread.sleep(2000);
+
+                mHandler.sendEmptyMessage(mShake.getmShakeCount());
+                mShake.setmShakeCount();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private class ShakeE implements SensorEventListener {
         private SensorManager   mSensorManager;
         private Sensor          mAccelerometer;
 
         private long                ShakeTime = 0;
-        private long                preTime;
-        private long                curTime;
         private int                 mShakeCount = 0;
-        private boolean             TimeSave = true;
-        private static final int    SHAKE_SKIP_TIME = 300;
-        private static final float  SHAKE_THRESHOLD_GRAVITY = 2.0F;
+        private static final int    SHAKE_SKIP_TIME = 500;
+        private static final float  SHAKE_THRESHOLD_GRAVITY = 2.5F;
 
         @Override
         public void onSensorChanged(SensorEvent event) {
@@ -59,20 +86,23 @@ public class MainActivity extends AppCompatActivity {
 
                     if (TimeSave) {
                         TimeSave = false;
-                        mShake.execute();
+                        Thread t = new Thread(new TestThread());
+                        t.start();
                     }
 
                     mShakeCount++;
-                    Integer txtCount = mShakeCount;
-                    txt.setText(txtCount.toString());
+                    displayCount(mShakeCount);
                 }
             }
         }
 
-        @Override
-        public void onAccuracyChanged(Sensor sensor, int accuracy) {
-
+        public void displayCount(int c) {
+            Integer txtCount = c;
+            txt.setText(txtCount.toString());
         }
+
+        @Override
+        public void onAccuracyChanged(Sensor sensor, int accuracy) {}
 
         public void create() {
             mSensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
@@ -89,29 +119,19 @@ public class MainActivity extends AppCompatActivity {
             this.mSensorManager.unregisterListener(this);
         }
 
-        public void print() {
+        public void print(int c) {
             Toast.makeText(getApplicationContext(),
-                    "Count = " + mShakeCount,
+                    "Count = " + c,
                     Toast.LENGTH_SHORT).show();
         }
 
-        @Override
-        protected Integer doInBackground(Void... voids) {
-            curTime = System.currentTimeMillis();
-            preTime = System.currentTimeMillis();
-
-            while (curTime - preTime < 2000) {
-                curTime = System.currentTimeMillis();
-            }
-
+        public int getmShakeCount() {
             return mShakeCount;
         }
 
-        @Override
-        protected void onPostExecute(Integer camera) {
-            super.onPostExecute(camera);
-            TimeSave = true;
+        public void setmShakeCount() {
             mShakeCount = 0;
+            TimeSave = true;
         }
     }
 
