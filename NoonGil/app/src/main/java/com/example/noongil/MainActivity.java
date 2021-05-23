@@ -30,6 +30,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
+import android.os.Message;
 import android.speech.tts.TextToSpeech;
 import android.util.Size;
 import android.util.SparseIntArray;
@@ -87,6 +88,10 @@ public class MainActivity extends AppCompatActivity {
 
     ImageCaptioning imgCaptioning= new ImageCaptioning();
     OCR ocr = new OCR();
+
+    private ShakeEvent      mShake;
+    private shakeHandler    mHandler;
+    private Thread          mThread;
 
     private void updatePreview() {
         if(cameraDevice == null)
@@ -225,6 +230,13 @@ public class MainActivity extends AppCompatActivity {
                 takePicture();
             }
         });
+
+        mShake = new ShakeEvent();
+        mShake.create(this);
+        mHandler = new shakeHandler();
+        mThread = new Thread(new shakeThread());
+
+        mThread.start();
     }
 
     private int getJpegOrientation(CameraCharacteristics c, int deviceOrientation) {
@@ -426,5 +438,53 @@ public class MainActivity extends AppCompatActivity {
         } catch (Exception e){
             return "";
         }
+    }
+
+    private class shakeHandler extends Handler {
+        @Override
+        public void handleMessage(Message msg) {
+            int target = msg.what;
+            switch (target) {
+                case 1:
+                    state = 1;
+                    break;
+                case 2:
+                    state = 2;
+                    break;
+                default:
+                    return;
+            }
+            takePicture();
+        }
+    }
+
+    public class shakeThread implements Runnable {
+        @Override
+        public void run() {
+            try {
+                while(true) {
+                    if (mShake.getmShakeCount() != 0) {
+                        Thread.sleep(1500);
+
+                        mHandler.sendEmptyMessage(mShake.getmShakeCount());
+                        mShake.setmShakeCount();
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mShake.start();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        mShake.stop();
     }
 }

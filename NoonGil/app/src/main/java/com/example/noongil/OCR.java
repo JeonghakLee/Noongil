@@ -16,8 +16,9 @@ import java.util.Date;
 import java.util.UUID;
 
 public class OCR {
-    private String ocrApiUrl = "https://";
-    private String ocrSecretKey = "";
+
+    private String ocrApiUrl = "URL of OCR API";
+    private String ocrSecretKey = "Secret Key of API";
 
     private String img;
 
@@ -114,7 +115,8 @@ public class OCR {
             JSONArray fields = images_json.getJSONArray("fields");
 
             for(int i = 0; i < fields.length(); ++i){
-                ocrRes += fields.getJSONObject(i).get("inferText");
+                ocrRes += " " + fields.getJSONObject(i).get("inferText");
+                //ocrRes += fields.getJSONObject(i).get("inferText");
             }
         } catch (Exception e){
             ;

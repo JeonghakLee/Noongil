@@ -13,7 +13,7 @@ import javax.net.ssl.HttpsURLConnection;
 
 public class ImageCaptioning {
 
-    private String requestURL = "http://localhost/";
+    private String requestURL = "URL of Server";
 
     public String getCaption(Bitmap bitmap) {
 
@@ -25,7 +25,7 @@ public class ImageCaptioning {
             OutputStream outPutStream;
             BufferedWriter bufferedWriterObject ;
             BufferedReader bufferedReaderObject ;
-            int RC ;
+            int RC;
             url = new URL(requestURL);
             httpURLConnectionObject = (HttpURLConnection) url.openConnection();
             httpURLConnectionObject.setReadTimeout(19000);
