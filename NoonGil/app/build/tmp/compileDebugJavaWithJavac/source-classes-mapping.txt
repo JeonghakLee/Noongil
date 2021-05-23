@@ -1,0 +1,28 @@
+com/example/noongil/AutoFitTextureView.java
+ com.example.noongil.AutoFitTextureView
+com/example/noongil/ShakeEvent.java
+ com.example.noongil.ShakeEvent
+com/example/noongil/BuildConfig.java
+ com.example.noongil.BuildConfig
+com/example/noongil/OCR.java
+ com.example.noongil.OCR
+com/example/noongil/ImageCaptioning.java
+ com.example.noongil.ImageCaptioning
+com/example/noongil/MainActivity.java
+ com.example.noongil.MainActivity
+ com.example.noongil.MainActivity$1
+ com.example.noongil.MainActivity$10
+ com.example.noongil.MainActivity$1AsyncTaskUploadClass
+ com.example.noongil.MainActivity$2
+ com.example.noongil.MainActivity$3
+ com.example.noongil.MainActivity$4
+ com.example.noongil.MainActivity$5
+ com.example.noongil.MainActivity$6
+ com.example.noongil.MainActivity$7
+ com.example.noongil.MainActivity$8
+ com.example.noongil.MainActivity$9
+ com.example.noongil.MainActivity$CompareSizesByArea
+ com.example.noongil.MainActivity$shakeHandler
+ com.example.noongil.MainActivity$shakeThread
+com/example/noongil/License_Activity.java
+ com.example.noongil.License_Activity

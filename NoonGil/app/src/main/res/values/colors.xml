@@ -7,4 +7,8 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="SWANSDOWN">#D1EDE1</color>
+    <color name="LARCHMERE">#7BC5AE</color>
+    <color name="OBSERVATORY">#028C6A</color>
+    <color name="KAITOKE">#003E19</color>
 </resources>
